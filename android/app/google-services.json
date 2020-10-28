@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "978183878189",
+    "firebase_url": "https://t-messenger-65a03.firebaseio.com",
+    "project_id": "t-messenger-65a03",
+    "storage_bucket": "t-messenger-65a03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978183878189:android:361df2248db95691122aa4",
+        "android_client_info": {
+          "package_name": "com.aasliev.messenger_t"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "978183878189-snga20li82khk4rpv7o1o8h4tommp15i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb7vbjrOILPavHlh13kPnCzTWelJr0bck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "978183878189-snga20li82khk4rpv7o1o8h4tommp15i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
