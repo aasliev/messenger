@@ -1,7 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
-import 'package:messenger_t/custom_button.dart';
+import 'package:messenger_t/methods/custom_button.dart';
 import 'package:messenger_t/screens/log_in_screen.dart';
 import 'package:messenger_t/screens/register_screen.dart';
 

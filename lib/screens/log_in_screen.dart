@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
-import 'package:messenger_t/custom_button.dart';
+import 'package:messenger_t/methods/custom_button.dart';
 import 'package:messenger_t/screens/chats_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -62,7 +62,7 @@ class _LogInState extends State<LogIn> {
               ),
               CustomButton(
                 color: kLogInButtonColor,
-                text: 'Register',
+                text: 'Log In',
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;

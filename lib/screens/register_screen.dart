@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
-import 'package:messenger_t/custom_button.dart';
+import 'package:messenger_t/methods/custom_button.dart';
 import 'package:messenger_t/screens/chats_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:messenger_t/methods/Firestore.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const id = 'registerScreen';
@@ -13,6 +15,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   String email;
   String password;
   bool showSpinner = false;
@@ -72,6 +75,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     final newUser = await _auth.createUserWithEmailAndPassword(
                         email: email, password: password);
                     if (newUser != null) {
+                      // create users path in firestore
+                      _firestore
+                          .collection(FirestoreFunctions.MAIN_USER_COLLECTION)
+                          .doc(email.toLowerCase())
+                          .set({
+                        FirestoreFunctions.USER_EMAIL_FIELD: email,
+                      });
                       //Navigator.pushNamed(context, Chats.id);
                       //Navigator.pushReplacementNamed(context, Chats.id);
                       Navigator.pushNamedAndRemoveUntil(
