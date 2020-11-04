@@ -1,9 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
 import 'package:messenger_t/methods/custom_button.dart';
 import 'package:messenger_t/screens/chats_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:messenger_t/methods/FirebaseAuth.dart';
+import 'package:messenger_t/methods/show_dialog.dart';
 
 class LogIn extends StatefulWidget {
   static const id = 'logIn';
@@ -12,7 +13,8 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  final _auth = FirebaseAuth.instance;
+  final fireAuthInstance = FireAuth();
+
   String email;
   String password;
   bool showSpinner = false;
@@ -68,10 +70,8 @@ class _LogInState extends State<LogIn> {
                     showSpinner = true;
                   });
                   try {
-                    final signedInUser = await _auth.signInWithEmailAndPassword(
-                        email: email, password: password);
-                    if (signedInUser != null) {
-                      // Navigator.pushNamed(context, Chats.id);
+                    if (await fireAuthInstance.signInWithEmail(
+                        email: email, password: password)) {
                       Navigator.pushNamedAndRemoveUntil(
                           context, Chats.id, (route) => false);
                     }
@@ -79,7 +79,10 @@ class _LogInState extends State<LogIn> {
                       showSpinner = false;
                     });
                   } catch (e) {
-                    print(e);
+                    showMyDialog(context, 'Error', e.toString());
+                    setState(() {
+                      showSpinner = false;
+                    });
                   }
                 },
               ),

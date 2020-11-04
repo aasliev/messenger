@@ -1,11 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
 import 'package:messenger_t/methods/custom_button.dart';
+import 'package:messenger_t/methods/show_dialog.dart';
 import 'package:messenger_t/screens/chats_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messenger_t/methods/Firestore.dart';
+import 'package:messenger_t/methods/FirebaseAuth.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const id = 'registerScreen';
@@ -14,8 +14,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
+  final fireAuthInstance = FireAuth();
+  final firestoreInstance = FirestoreFunctions();
+
   String email;
   String password;
   bool showSpinner = false;
@@ -71,27 +72,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   });
                   print(email);
                   print(password);
+
                   try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    if (newUser != null) {
-                      // create users path in firestore
-                      _firestore
-                          .collection(FirestoreFunctions.MAIN_USER_COLLECTION)
-                          .doc(email.toLowerCase())
-                          .set({
-                        FirestoreFunctions.USER_EMAIL_FIELD: email,
+                    if (await fireAuthInstance.createUserWithEmail(
+                        email: email, password: password)) {
+                      firestoreInstance.createUserWithEmail(email: email);
+                      setState(() {
+                        showSpinner = true;
                       });
-                      //Navigator.pushNamed(context, Chats.id);
-                      //Navigator.pushReplacementNamed(context, Chats.id);
                       Navigator.pushNamedAndRemoveUntil(
                           context, Chats.id, (route) => false);
                     }
-                    setState(() {
-                      showSpinner = true;
-                    });
                   } catch (e) {
-                    print(e);
+                    showMyDialog(context, 'Error', e.toString());
+                    setState(() {
+                      showSpinner = false;
+                    });
                   }
                 },
               ),

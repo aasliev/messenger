@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
 import 'package:messenger_t/methods/Firestore.dart';
 import 'package:messenger_t/screens/chat_screen.dart';
+import 'package:messenger_t/screens/profile_screen.dart';
+import 'package:messenger_t/screens/welcome_screen.dart';
 import 'new_message_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:messenger_t/methods/FirebaseAuth.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser;
@@ -16,30 +19,48 @@ class Chats extends StatefulWidget {
 }
 
 class _ChatsState extends State<Chats> {
-  final _auth = FirebaseAuth.instance;
+  final fireAuthInstance = FireAuth();
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    loggedInUser = fireAuthInstance.getCurrentUser();
   }
 
-  void getCurrentUser() {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        loggedInUser = user;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
+/*
+  IconButton(
+  icon: Icon(Icons.exit_to_app),
+  onPressed: () {
+  fireAuthInstance.signOutUser();
+  Navigator.pushNamedAndRemoveUntil(
+  context, WelcomeScreen.id, (route) => false);
+  },
+  ),
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: null,
+        leading: GestureDetector(
+          onTap: () {
+            print('go to profile screen');
+            // Navigator.pushNamed(context, ProfileScreen.id);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) {
+                      return ProfileScreen();
+                    }));
+          },
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundImage: AssetImage(kLogoImageRoute),
+              radius: 10,
+            ),
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create),
@@ -88,7 +109,6 @@ class OpenChatStream extends StatelessWidget {
           );
         }
         final openChats = snapshot.data.docs;
-        // List<Text> openChatTextWidgets = [];
         List<OpenChatTile> openChatTiles = [];
         for (var eachChat in openChats) {
           final chatWith = eachChat.get(FirestoreFunctions.CHAT_WITH_FIELD);

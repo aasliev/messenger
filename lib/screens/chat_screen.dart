@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messenger_t/methods/Firestore.dart';
 import 'chats_screen.dart';
@@ -18,6 +17,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final firestoreInstance = FirestoreFunctions();
   final messageTextController = TextEditingController();
   String messageText;
   @override
@@ -62,17 +62,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       print('loggedInUser: ${loggedInUser.email}');
                       print('text: $messageText');
 
-                      _firestore
-                          .collection(FirestoreFunctions.MAIN_CHATS_COLLECTION)
-                          .doc(chatID)
-                          .collection(
-                              FirestoreFunctions.MESSAGES_SUB_COLLECTION)
-                          .doc(now.toString())
-                          .set({
-                        FirestoreFunctions.TEXT_FIELD: messageText,
-                        FirestoreFunctions.SENDER_FIELD: loggedInUser.email,
-                        FirestoreFunctions.TIME_FIELD: now,
-                      });
+                      firestoreInstance.sendMessage(
+                          chatID: chatID,
+                          sender: loggedInUser.email,
+                          messageText: messageText,
+                          dateTime: now);
+                      messageText = '';
                     },
                     child: Text(
                       'Send',

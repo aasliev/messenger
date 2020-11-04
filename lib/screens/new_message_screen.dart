@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:messenger_t/constants.dart';
 import 'package:messenger_t/methods/Firestore.dart';
 import 'package:messenger_t/screens/chats_screen.dart';
+import 'package:messenger_t/methods/show_dialog.dart';
 
 class NewMessageScreen extends StatefulWidget {
   @override
@@ -96,7 +97,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                             FirestoreFunctions.CHAT_WITH_FIELD: email,
                             FirestoreFunctions.CHAT_ID_FIELD: openChatID,
                           });
-                          //create openchat for email (receiver)
+                          //create openChat for email (receiver)
                           _firestore
                               .collection(
                                   FirestoreFunctions.MAIN_USER_COLLECTION)
@@ -110,30 +111,40 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                             FirestoreFunctions.CHAT_ID_FIELD: openChatID,
                           });
 
-                          // create chats path
-                          _firestore
-                              .collection(
-                                  FirestoreFunctions.MAIN_CHATS_COLLECTION)
-                              .doc(openChatID)
-                              .collection(
-                                  FirestoreFunctions.MESSAGES_SUB_COLLECTION)
-                              .add({
-                            FirestoreFunctions.SENDER_FIELD: loggedInUser.email,
-                            FirestoreFunctions.TEXT_FIELD: messageText,
-                            FirestoreFunctions.TIME_FIELD: DateTime.now(),
-                          });
+                          // check if messageText is not null or empty
+                          if (messageText != null && messageText != '') {
+                            // create chats path
+                            _firestore
+                                .collection(
+                                    FirestoreFunctions.MAIN_CHATS_COLLECTION)
+                                .doc(openChatID)
+                                .collection(
+                                    FirestoreFunctions.MESSAGES_SUB_COLLECTION)
+                                .add({
+                              FirestoreFunctions.SENDER_FIELD:
+                                  loggedInUser.email,
+                              FirestoreFunctions.TEXT_FIELD: messageText,
+                              FirestoreFunctions.TIME_FIELD: DateTime.now(),
+                            });
+                            // clear message text view
+                            messageTextController.clear();
+                            messageText = '';
+                            Navigator.pop(context);
+                          } else {
+                            // print('message text is empty');
+                          }
 
-                          print('email exists, send message');
+                          //print('email exists, send message');
                         } else {
                           // show error 'email does not exists
-                          print('email does not exists');
+                          // print('email does not exists');
+                          showMyDialog(
+                              context, 'Error', 'Email does not exists.');
                         }
                       });
 
                       print('email: $email');
                       print('message sent: $messageText');
-
-                      Navigator.pop(context);
                     },
                     child: Text(
                       'Send',
